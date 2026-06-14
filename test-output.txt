@@ -1,0 +1,34 @@
+﻿node.exe : npm warn Unknown env config "devdir". This will stop working in the next major version of npm. See `npm 
+help npmrc` for supported config options.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (npm warn Unknow...config options.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
+> agent-eval-pipeline@1.0.0 test
+> jest --runInBand
+
+ts-jest[ts-jest-transformer] (WARN) Define `ts-jest` config under `globals` is deprecated. Please do
+transform: {
+    <transform_regex>: ['ts-jest', { /* ts-jest config goes here in Jest */ }],
+},
+See more at https://kulshekhar.github.io/ts-jest/docs/getting-started/presets#advanced
+PASS tests/integration/eval-pipeline.test.ts
+PASS tests/unit/ragas-evaluator.test.ts
+PASS tests/unit/cost-tracker.test.ts
+PASS tests/unit/regression-gate.test.ts
+PASS tests/unit/latency-tracker.test.ts
+PASS tests/unit/hallucination-detector.test.ts
+
+Test Suites: 6 passed, 6 total
+Tests:       54 passed, 54 total
+Snapshots:   0 total
+Time:        2.877 s
+Ran all test suites.
+npm notice
+npm notice New minor version of npm available! 11.12.1 -> 11.17.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.17.0
+npm notice To update run: npm install -g npm@11.17.0
+npm notice

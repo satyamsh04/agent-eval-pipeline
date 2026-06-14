@@ -1,0 +1,109 @@
+[
+  {
+    "id": "good-001-capital",
+    "query": "What is the capital of France?",
+    "agentOutput": "The capital of France is Paris.",
+    "groundTruth": "Paris",
+    "context": [
+      "Paris is the capital and most populous city of France.",
+      "France is a country in Western Europe."
+    ],
+    "expectedHallucination": false
+  },
+  {
+    "id": "good-002-shakespeare",
+    "query": "Who wrote Romeo and Juliet?",
+    "agentOutput": "William Shakespeare wrote Romeo and Juliet.",
+    "groundTruth": "William Shakespeare",
+    "context": [
+      "Romeo and Juliet is a tragedy that William Shakespeare wrote early in his career.",
+      "The play is set in Verona, Italy."
+    ],
+    "expectedHallucination": false
+  },
+  {
+    "id": "good-003-boiling-point",
+    "query": "What is the boiling point of water at sea level?",
+    "agentOutput": "The boiling point of water at sea level is 100 degrees Celsius.",
+    "groundTruth": "100 degrees Celsius",
+    "context": [
+      "At sea level, the boiling point of water is 100 degrees Celsius (212 degrees Fahrenheit)."
+    ],
+    "expectedHallucination": false
+  },
+  {
+    "id": "good-004-gravity",
+    "query": "What force keeps planets in orbit around the Sun?",
+    "agentOutput": "Gravity is the force that keeps planets in orbit around the Sun.",
+    "groundTruth": "Gravity",
+    "context": [
+      "Gravity is the force that keeps the planets in orbit around the Sun.",
+      "It also governs the motion of moons around planets."
+    ],
+    "expectedHallucination": false
+  },
+  {
+    "id": "good-005-largest-planet",
+    "query": "What is the largest planet in the solar system?",
+    "agentOutput": "The largest planet in the solar system is Jupiter.",
+    "groundTruth": "Jupiter",
+    "context": [
+      "Jupiter is the largest planet in the solar system.",
+      "The Great Red Spot is a giant storm on Jupiter."
+    ],
+    "expectedHallucination": false
+  },
+  {
+    "id": "good-006-brazil-language",
+    "query": "What language is primarily spoken in Brazil?",
+    "agentOutput": "Portuguese is the language spoken in Brazil.",
+    "groundTruth": "Portuguese",
+    "context": [
+      "Portuguese is the official and most widely spoken language in Brazil.",
+      "Brazil is the largest country in South America."
+    ],
+    "expectedHallucination": false
+  },
+  {
+    "id": "hallu-001-wrong-year",
+    "query": "When did World War II end?",
+    "agentOutput": "World War II ended in 1948 after the signing of the Treaty of Versailles.",
+    "groundTruth": "1945",
+    "context": [
+      "World War II ended in 1945.",
+      "It involved many of the world's nations."
+    ],
+    "expectedHallucination": true
+  },
+  {
+    "id": "hallu-002-fabricated-symbol",
+    "query": "What is the chemical symbol for gold?",
+    "agentOutput": "The chemical symbol for gold is Gd, which stands for Goldium.",
+    "groundTruth": "Au",
+    "context": [
+      "The chemical symbol for gold is Au, from the Latin word aurum."
+    ],
+    "expectedHallucination": true
+  },
+  {
+    "id": "hallu-003-wrong-artist",
+    "query": "Who painted the Mona Lisa?",
+    "agentOutput": "The Mona Lisa was painted by Pablo Picasso in 1923.",
+    "groundTruth": "Leonardo da Vinci",
+    "context": [
+      "The Mona Lisa was painted by Leonardo da Vinci.",
+      "It is displayed at the Louvre in Paris."
+    ],
+    "expectedHallucination": true
+  },
+  {
+    "id": "hallu-004-off-topic",
+    "query": "What is the speed of light?",
+    "agentOutput": "Bananas are a good source of potassium and dietary fiber.",
+    "groundTruth": "Approximately 299,792 kilometers per second",
+    "context": [
+      "The speed of light in vacuum is approximately 299,792 kilometers per second."
+    ],
+    "expectedHallucination": true
+  }
+]
