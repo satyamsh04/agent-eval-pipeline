@@ -72,11 +72,10 @@ describe('CostTracker', () => {
     expect(result.totalTokens).toBe(2_000_000);
   });
 
-  it('resolves ollama-llama3.1-8b alias to llama3.1-8b pricing', () => {
-    const canonical = new CostTracker();
-    const alias = new CostTracker();
-    const viaCanonical = canonical.track(1_000_000, 0, 'llama3.1-8b').cost;
-    const viaAlias = alias.track(1_000_000, 0, 'ollama-llama3.1-8b').cost;
-    expect(viaAlias).toBeCloseTo(viaCanonical, 6);
+  it('prices local ollama-llama3.1-8b at zero cost', () => {
+    const tracker = new CostTracker();
+    const result = tracker.track(1_000_000, 1_000_000, 'ollama-llama3.1-8b');
+    expect(result.cost).toBe(0);
+    expect(result.totalTokens).toBe(2_000_000);
   });
 });

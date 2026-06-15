@@ -42,8 +42,12 @@ Thumbs.db
 .cursor/
 *.swp
 
-# Debug / scratch artifacts
+# Local debug outputs
 ollama-*.json
+*.local.json
+install-deps.txt
+test-*.txt
+typecheck.txt
 *-eval.txt
 test-output.txt
 test-after.txt

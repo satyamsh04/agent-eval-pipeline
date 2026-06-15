@@ -5,6 +5,7 @@ import express, {
   type Response,
 } from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { collectDefaultMetrics, Gauge, Registry } from 'prom-client';
 import { RagasEvaluator, type EvalMetrics } from '../eval/ragas-evaluator';
@@ -34,33 +35,31 @@ export interface EvaluateResponse {
 }
 
 /**
- * API-key gate.
+ * API key authentication middleware.
  *
- * Disabled (no-op) when `process.env.API_KEY` is unset — keeps local dev and
- * the test suite open. When a key IS configured, every route except `/health`
- * requires a matching `x-api-key` header, otherwise responds `401`.
+ * If `API_KEY` is not configured, this middleware is a no-op to keep local
+ * development friction low. `/health` is always exempt for probes.
  *
- * @param req - Incoming request.
- * @param res - Outgoing response.
- * @param next - Next middleware in the chain.
- * @returns Nothing; either calls `next()` or sends a `401`.
+ * @param req - Express request object.
+ * @param res - Express response object.
+ * @param next - Next middleware callback.
  */
-function apiKeyAuth(req: Request, res: Response, next: NextFunction): void {
-  const configured = process.env.API_KEY;
-  if (!configured) {
-    next();
-    return;
-  }
+function requireApiKey(req: Request, res: Response, next: NextFunction): void {
   if (req.path === '/health') {
     next();
     return;
   }
-  const provided = req.header('x-api-key');
-  if (provided && provided === configured) {
+  const expected = process.env.API_KEY?.trim();
+  if (!expected) {
     next();
     return;
   }
-  res.status(401).json({ error: 'Unauthorized: missing or invalid API key.' });
+  const received = req.header('x-api-key')?.trim();
+  if (received === expected) {
+    next();
+    return;
+  }
+  res.status(401).json({ error: 'Unauthorized: invalid API key.' });
 }
 
 /**
@@ -73,20 +72,36 @@ function apiKeyAuth(req: Request, res: Response, next: NextFunction): void {
  */
 export function createApp(): Express {
   const app = express();
+  const allowedOrigins = (process.env.ALLOWED_ORIGINS ?? '')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter((origin) => origin.length > 0);
 
-  // --- Security & cross-origin middleware (order matters) ---
-  app.use(cors());
+  app.use(helmet());
+  app.use(
+    cors({
+      origin:
+        allowedOrigins.length > 0
+          ? (origin, callback) => {
+              if (!origin || allowedOrigins.includes(origin)) {
+                callback(null, true);
+                return;
+              }
+              callback(new Error('Origin not allowed by CORS policy.'));
+            }
+          : true,
+    }),
+  );
   app.use(
     rateLimit({
-      windowMs: 15 * 60 * 1000,
+      windowMs: 60 * 1000,
       max: 100,
       standardHeaders: true,
       legacyHeaders: false,
-      message: { error: 'Too many requests, please try again later.' },
     }),
   );
   app.use(express.json());
-  app.use(apiKeyAuth);
+  app.use(requireApiKey);
 
   const evaluator = new RagasEvaluator();
   const detector = new HallucinationDetector();
@@ -153,8 +168,6 @@ export function createApp(): Express {
     if (typeof model !== 'string' || model.trim().length === 0) {
       return res.status(400).json({ error: '"model" must be a non-empty string.' });
     }
-    // Accepts hosted models, local/Ollama ids (qwen2.5-coder:7b), and aliases
-    // (ollama-llama3.1-8b) — see CostTracker.supportedModels().
     const supported = CostTracker.supportedModels();
     if (!supported.includes(model)) {
       return res.status(400).json({
@@ -200,7 +213,6 @@ export function createApp(): Express {
       };
       return res.json(response);
     } catch (err: unknown) {
-      // Ensure the latency timer is released even on failure.
       try {
         latency.stop(id);
       } catch {
@@ -210,7 +222,7 @@ export function createApp(): Express {
         err instanceof Error ? err.message : 'Internal evaluation error.';
       return res
         .status(500)
-        .json({ error: 'Internal evaluation error.', detail: message });
+        .json({ error: 'Internal server error.', detail: message });
     }
   });
 
@@ -237,15 +249,19 @@ export function createApp(): Express {
     res.end(await registry.metrics());
   });
 
-  // --- Global error handler: classifies malformed JSON (400) vs faults (500) ---
   app.use(
-    (err: unknown, _req: Request, res: Response, _next: NextFunction): void => {
+    (
+      err: unknown,
+      _req: Request,
+      res: Response,
+      _next: NextFunction,
+    ): void => {
       if (
         err instanceof SyntaxError &&
         'status' in err &&
         (err as { status?: number }).status === 400
       ) {
-        res.status(400).json({ error: 'Malformed JSON request body.' });
+        res.status(400).json({ error: 'Invalid JSON body.' });
         return;
       }
       const message = err instanceof Error ? err.message : 'Unexpected error.';
