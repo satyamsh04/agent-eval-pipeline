@@ -1,3 +1,5 @@
+Production-grade pipeline that measures, gates, and improves LLM agent reliability — RAGAS-style metrics, hallucination detection, and a CI quality gate.
+
 # Agent Reliability & Evaluation Pipeline
 
 > **Most projects build LLM agents. This one proves they're reliable before they ship.**
@@ -5,13 +7,13 @@
 > RAGAS-style metrics, hallucination detection, cost/latency observability, and a CI gate
 > that physically blocks any pull request that makes the agent worse.
 
+[![CI](https://github.com/satyamsh04/agent-eval-pipeline/actions/workflows/eval-ci.yml/badge.svg)](https://github.com/satyamsh04/agent-eval-pipeline/actions/workflows/eval-ci.yml)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)
 ![Node.js](https://img.shields.io/badge/Node.js-20-339933?logo=node.js&logoColor=white)
 ![Jest](https://img.shields.io/badge/tested%20with-Jest-C21325?logo=jest&logoColor=white)
 ![Express](https://img.shields.io/badge/API-Express-000000?logo=express&logoColor=white)
 ![Prometheus](https://img.shields.io/badge/metrics-Prometheus-E6522C?logo=prometheus&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)
-![CI](https://img.shields.io/badge/CI-GitHub%20Actions-2088FF?logo=githubactions&logoColor=white)
 
 ---
 

@@ -39,4 +39,11 @@ yarn-error.log*
 Thumbs.db
 .idea/
 .vscode/
+.cursor/
 *.swp
+
+# Debug / scratch artifacts
+ollama-*.json
+*-eval.txt
+test-output.txt
+test-after.txt

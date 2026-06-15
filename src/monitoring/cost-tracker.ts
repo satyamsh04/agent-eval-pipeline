@@ -22,18 +22,45 @@ interface ModelPricing {
   outputPer1M: number;
 }
 
-/** Supported model identifiers. */
-export type SupportedModel = 'gpt-4o' | 'claude-opus-4' | 'llama3.1-8b';
+/** Supported model identifiers (canonical pricing keys). */
+export type SupportedModel =
+  | 'gpt-4o'
+  | 'claude-opus-4'
+  | 'llama3.1-8b'
+  | 'qwen2.5-coder:7b';
 
 /**
  * Estimated public pricing (USD per 1M tokens). Values are approximate and
  * centralized here so they are trivial to update.
+ *
+ * Local/Ollama models are priced at $0 — they incur no API spend.
  */
 const PRICING: Record<SupportedModel, ModelPricing> = {
   'gpt-4o': { inputPer1M: 2.5, outputPer1M: 10.0 },
   'claude-opus-4': { inputPer1M: 15.0, outputPer1M: 75.0 },
   'llama3.1-8b': { inputPer1M: 0.05, outputPer1M: 0.08 },
+  'qwen2.5-coder:7b': { inputPer1M: 0, outputPer1M: 0 },
 };
+
+/**
+ * Alternate model names that resolve to a canonical {@link SupportedModel}
+ * for pricing (e.g. Ollama-served variants of hosted model IDs).
+ */
+const MODEL_ALIASES: Record<string, SupportedModel> = {
+  'ollama-llama3.1-8b': 'llama3.1-8b',
+};
+
+/**
+ * Resolves a caller-supplied model id to its canonical pricing key.
+ *
+ * @param model - Raw model identifier (may be an alias).
+ * @returns The canonical {@link SupportedModel}, or `undefined` if unknown.
+ */
+function resolveModel(model: string): SupportedModel | undefined {
+  if (model in PRICING) return model as SupportedModel;
+  const canonical = MODEL_ALIASES[model];
+  return canonical;
+}
 
 /**
  * Estimates and accumulates LLM token cost per request.
@@ -59,12 +86,13 @@ export class CostTracker {
     if (inputTokens < 0 || outputTokens < 0) {
       throw new Error('Token counts must be non-negative.');
     }
-    const pricing = PRICING[model as SupportedModel];
-    if (!pricing) {
+    const canonical = resolveModel(model);
+    if (!canonical) {
       throw new Error(
-        `Unknown model "${model}". Supported: ${Object.keys(PRICING).join(', ')}.`,
+        `Unknown model "${model}". Supported: ${CostTracker.supportedModels().join(', ')}.`,
       );
     }
+    const pricing = PRICING[canonical];
 
     const cost =
       (inputTokens / 1_000_000) * pricing.inputPer1M +
@@ -97,11 +125,12 @@ export class CostTracker {
   }
 
   /**
-   * Lists the model identifiers this tracker can price.
+   * Lists every model identifier accepted by {@link track} — canonical ids
+   * plus registered aliases (e.g. `ollama-llama3.1-8b`).
    *
-   * @returns The supported model identifiers.
+   * @returns All supported model identifiers.
    */
-  static supportedModels(): SupportedModel[] {
-    return Object.keys(PRICING) as SupportedModel[];
+  static supportedModels(): string[] {
+    return [...Object.keys(PRICING), ...Object.keys(MODEL_ALIASES)];
   }
 }

@@ -94,6 +94,32 @@ export function cosineSimilarity(a: TermVector, b: TermVector): number {
 }
 
 /**
+ * Jaccard similarity (token-set overlap) between two strings.
+ *
+ * Uses the same {@link tokenize} pipeline as cosine scoring so both signals
+ * operate on comparable content tokens.
+ *
+ * @param a - First string.
+ * @param b - Second string.
+ * @returns Jaccard index in [0, 1] (0 when either side has no tokens).
+ */
+export function jaccardSimilarity(a: string, b: string): number {
+  const tokensA = new Set(tokenize(a));
+  const tokensB = new Set(tokenize(b));
+  if (tokensA.size === 0 || tokensB.size === 0) return 0;
+
+  let intersection = 0;
+  for (const token of tokensA) {
+    if (tokensB.has(token)) intersection += 1;
+  }
+
+  const union = tokensA.size + tokensB.size - intersection;
+  if (union === 0) return 0;
+
+  return Math.max(0, Math.min(1, intersection / union));
+}
+
+/**
  * Convenience helper: cosine similarity directly between two raw strings.
  *
  * @param a - First string.

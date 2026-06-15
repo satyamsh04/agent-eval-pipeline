@@ -55,7 +55,28 @@ describe('CostTracker', () => {
 
   it('exposes the list of supported models', () => {
     expect(CostTracker.supportedModels()).toEqual(
-      expect.arrayContaining(['gpt-4o', 'claude-opus-4', 'llama3.1-8b']),
+      expect.arrayContaining([
+        'gpt-4o',
+        'claude-opus-4',
+        'llama3.1-8b',
+        'qwen2.5-coder:7b',
+        'ollama-llama3.1-8b',
+      ]),
     );
+  });
+
+  it('prices local qwen2.5-coder:7b at zero cost', () => {
+    const tracker = new CostTracker();
+    const result = tracker.track(1_000_000, 1_000_000, 'qwen2.5-coder:7b');
+    expect(result.cost).toBe(0);
+    expect(result.totalTokens).toBe(2_000_000);
+  });
+
+  it('resolves ollama-llama3.1-8b alias to llama3.1-8b pricing', () => {
+    const canonical = new CostTracker();
+    const alias = new CostTracker();
+    const viaCanonical = canonical.track(1_000_000, 0, 'llama3.1-8b').cost;
+    const viaAlias = alias.track(1_000_000, 0, 'ollama-llama3.1-8b').cost;
+    expect(viaAlias).toBeCloseTo(viaCanonical, 6);
   });
 });
