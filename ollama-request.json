@@ -1,5 +1,0 @@
-﻿{
-    "model":  "qwen2.5-coder:7b",
-    "prompt":  "You are a senior TypeScript engineer. Implement a method called evaluateFaithfulness() for a RagasEvaluator class in ragas-evaluator.ts.\n\nRequirements:\n- Method signature: evaluateFaithfulness(output: string, context: string[]): number\n- Returns a score from 0 to 1\n- Uses cosine similarity (offline, no external API)\n- Available helpers from \u0027../utils/text\u0027: cosineSimilarity, splitSentences, termFrequency, textSimilarity\n- For each sentence in output, compute max cosine similarity to any context chunk, then average\n- Handle edge cases: empty output or empty context returns 0\n- Include JSDoc comment\n- TypeScript strict mode\n\nAlso show a private clamp01(value: number): number helper if needed.\n\nReturn ONLY the TypeScript code for evaluateFaithfulness() and any helper it needs. No explanation.",
-    "stream":  false
-}
