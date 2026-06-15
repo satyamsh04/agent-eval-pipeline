@@ -153,7 +153,9 @@ export function createApp(): Express {
     if (typeof model !== 'string' || model.trim().length === 0) {
       return res.status(400).json({ error: '"model" must be a non-empty string.' });
     }
-    const supported = CostTracker.supportedModels() as string[];
+    // Accepts hosted models, local/Ollama ids (qwen2.5-coder:7b), and aliases
+    // (ollama-llama3.1-8b) — see CostTracker.supportedModels().
+    const supported = CostTracker.supportedModels();
     if (!supported.includes(model)) {
       return res.status(400).json({
         error: `Unsupported model "${model}". Supported: ${supported.join(', ')}.`,
