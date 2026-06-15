@@ -143,7 +143,6 @@ Docker · GitHub Actions. Designed to extend onto AWS (Lambda, DynamoDB, S3).
 
 ## Author
 
-**Satyam** — final-year Computer Science (Data Science) student at Griffith University,
-graduating November 2026. Built to demonstrate evaluation, observability, and CI/CD for AI systems.
+**Satyam** — final-year Computer Science (AI & Data Science) student at Griffith University. Built to demonstrate evaluation, observability, and CI/CD for AI systems.
 
 _MIT licensed._
