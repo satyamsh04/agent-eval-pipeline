@@ -51,3 +51,12 @@ typecheck.txt
 *-eval.txt
 test-output.txt
 test-after.txt
+
+
+# IDE / AI tool config
+.cursor/
+.claude/
+.DS_Store
+
+# Test artefact output files
+*.txt
